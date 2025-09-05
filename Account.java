@@ -20,6 +20,7 @@
 
 public class Account
 {
+    // Account attributes
     private static int tracker = 1;
     private int code;
     private double balance;
@@ -27,15 +28,12 @@ public class Account
     private String password;
     
     // Constructor
-    public Account(String username, String password){
-        
+    public Account(String username, String password){      
         this.code = tracker + 100;
         this.balance = 0;
         this.username = username;
-        this.password = password;
-        
-        tracker++;
-        
+        this.password = password;        
+        tracker++;        
     }
     
     /**
@@ -113,8 +111,7 @@ public class Account
             return false;
             else{
                 this.balance = this.balance - amount;
-                receivingAccount.setBalance((receivingAccount.getBalance() + amount));
-                
+                receivingAccount.setBalance((receivingAccount.getBalance() + amount));             
                 return true;
             }
     } 
