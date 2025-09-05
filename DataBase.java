@@ -18,27 +18,22 @@
 
 public class DataBase
 {
-    private Account[] accountFiles;
+    // Database vector and index attributes
+    private Account[] accounts;
     private int index;
     
     // Constructor
     public DataBase(){
-        
         this.index = 0;
-        this.accountFiles = null;
-    
+        this.accounts = null;  
     }
     
     // Getter for a copy of the database vector for iteration
-    public Account[] getAccountFiles(){
-        Account[] copyOfAccountFiles = new Account[this.index];
-        
-        for(int i = 0; i < this.index; i++){
-            
-            copyOfAccountFiles[i] = this.accountFiles[i];
-
-        }
-        
+    public Account[] getAccounts(){
+        Account[] copyOfAccountFiles = new Account[this.index];      
+        for(int i = 0; i < this.index; i++){          
+            copyOfAccountFiles[i] = this.accounts[i];
+        }        
         return copyOfAccountFiles;
     }
     
@@ -48,189 +43,129 @@ public class DataBase
     }
     
     // Intialize the database vector
-    public void initializeDatabase(int size){
-        
-        this.accountFiles = new Account[size];
-    
+    public void initializeDatabase(int size){      
+        this.accounts = new Account[size];  
     }
     
     // Insert an account on the database
     public boolean insertAccount(Account account){
-
-        if(this.index >= accountFiles.length){
-            
-            return false;
-        
-        } else{
-            
-            this.accountFiles[index] = account;
-            this.index++;
-            
+        if(this.index >= accounts.length){            
+            return false;      
+        } else{          
+            this.accounts[index] = account;
+            this.index++;           
             return true;
         }        
     }
     
-    // System.out.println("\nError: Account could not be saved. Max number of accounts reached.");
-    
     // Locate an account on the database via code
-    public Account locateAccount(int code){
-        
-        int accountCode;
-        
-        for(int i = 0; i < this.accountFiles.length; i++){
-            
-            if(this.accountFiles[i] != null){
-            
-                accountCode = this.accountFiles[i].getCode();
+    public Account locateAccount(int code){     
+        int accountCode;        
+        for(int i = 0; i < this.accounts.length; i++){           
+            if(this.accounts[i] != null){           
+                accountCode = this.accounts[i].getCode();
                 
-                if(accountCode == code){
-                
-                    return this.accountFiles[i];
-                
+                if(accountCode == code){                
+                    return this.accounts[i];                
                 }
             }
-        }
-        
+        }      
         return null;
     }
     
     // System.out.println("\nError: Account does not exist.");
 
     // Locate an account on the database via code
-    public Account locateAccount(String username){
-        
+    public Account locateAccount(String username){        
         String accountName;
         
-        for(int i = 0; i < this.accountFiles.length; i++){
-            
-            if(this.accountFiles[i] != null){
+        for(int i = 0; i < this.accounts.length; i++){            
+            if(this.accounts[i] != null){               
+                accountName = this.accounts[i].getUsername();
                 
-                accountName = this.accountFiles[i].getUsername();
-                
-                if(username.equals(accountName)){
-                
-                    return this.accountFiles[i];
-                
+                if(username.equals(accountName)){              
+                    return this.accounts[i];              
                 }
             }
-        }
-        
+        }       
         return null;
     }
     
-    // System.out.println("\nError: Account does not exist.");
-    
     // Delete an account from the database via code
-    public boolean deleteAccount(int code){
-        
-        Account aux = locateAccount(code);
-        
-        for(int i = 0; i < this.index; i++){
-            
-            if(this.accountFiles[i] == aux){
-                    
-                    this.accountFiles[i] = null;
-                    return true;
-                    
+    public boolean deleteAccount(int code){        
+        Account aux = locateAccount(code);       
+        for(int i = 0; i < this.index; i++){          
+            if(this.accounts[i] == aux){                  
+                    this.accounts[i] = null;
+                    return true;                 
             }
-        }
-        
+        }        
         return false;
     }
     
     // Rearrange database to fill null elements
-    public void rearrangeFiles(){
-        
-        for(int i = 0; i < this.index; i++){
-            
-            if(this.accountFiles[i] == null){
-                
-                    for(int j = i; j < this.index; j++){
-                        
-                        this.accountFiles[j] = this.accountFiles[j + 1];
-                        
-                    }
-                    
+    public void rearrangeFiles(){        
+        for(int i = 0; i < this.index; i++){          
+            if(this.accounts[i] == null){              
+                    for(int j = i; j < this.index; j++){                        
+                        this.accounts[j] = this.accounts[j + 1];                      
+                    }                   
                     this.index--;
             }
         }
     }
     
     // Sort accounts in database by code
-    public void sortFilesByCode(){
-        
-        for(int i = 0; i < this.accountFiles.length; i++){
-            
-            for(int j = i + 1; j < this.accountFiles.length; j++){
-                
+    public void sortFilesByCode(){        
+        for(int i = 0; i < this.accounts.length; i++){            
+            for(int j = i + 1; j < this.accounts.length; j++){                
                 Account temp;
                 
-                if(accountFiles[j].getCode() < accountFiles[i].getCode()){
-                    temp = accountFiles[i];
-                    accountFiles[i] = accountFiles[j];
-                    accountFiles[j] = temp;
-                }
-                
+                if(accounts[j].getCode() < accounts[i].getCode()){
+                    temp = accounts[i];
+                    accounts[i] = accounts[j];
+                    accounts[j] = temp;
+                }                
             }
         }
     }
     
     // Print entire database
-    public void printDatabase(){
-        
-        for(int i = 0; i < this.accountFiles.length; i++){
-            
-            if(this.accountFiles[i] == null){
-                
-                System.out.println("Account{NULL, Position:" + (i + 1) + "}");
-                
-            }else {
-            
-                System.out.println(this.accountFiles[i].toString());
-            
+    public void printDatabase(){      
+        for(int i = 0; i < this.accounts.length; i++){            
+            if(this.accounts[i] == null){                
+                System.out.println("Account{NULL, Position:" + (i + 1) + "}");                
+            }else {            
+                System.out.println(this.accounts[i].toString());          
             }
         }
     }
     
-    // Check if username is available
-    public boolean checkUsername(String username){          // Checks the account vector to see if username is already taken. If so, returns false.
-        
-        String accountName;
-        
-        for(int i = 0; i < this.index; i++){
-                       
-            accountName = this.accountFiles[i].getUsername();
+    // Checks the account vector to see if username is already taken. If so, returns false.
+    public boolean checkUsername(String username){                
+        String accountName;        
+        for(int i = 0; i < this.index; i++){                       
+            accountName = this.accounts[i].getUsername();
             
-            if(username.equals(accountName))
-                
-                return false;
-        
-        }
-        
+            if(username.equals(accountName))             
+                return false;      
+        }        
         return true;
     }
     
     // Validate account login attempt
-    public boolean validateLogin(String username, String password){
-        
+    public boolean validateLogin(String username, String password){        
         String accountPassword;
         
-        if(checkUsername(username)){
-            
-            return false;
-            
-        } else {
-            
+        if(checkUsername(username)){            
+            return false;         
+        } else {         
             accountPassword = locateAccount(username).getPassword();
             
-            if(password.equals(accountPassword)){
-                                
-                return true;
-                
-            } else {
-                                
-                return false;
-                
+            if(password.equals(accountPassword)){                               
+                return true;              
+            } else {                              
+                return false;                
             }
         }
     }

@@ -17,25 +17,22 @@ import java.util.Scanner;
 
 public class LorenzoBank
 {   
-    // Scanner class
-    private Scanner input;
+    // Scanner attribute
+    private final Scanner input;
     
-    // Database
+    // Database attribute
     private DataBase database;
     
     //Username and password curently logged in
     private String currentUsername;
     private String currentPassword;
     
-    
+    // Constructor
     public LorenzoBank(){
-        
         input = new Scanner(System.in);
-
         this.database = null;
         this.currentUsername = null;
-        this.currentPassword = null;
-        
+        this.currentPassword = null;   
     }
     
     // Getter and setter for DataBase
@@ -64,128 +61,93 @@ public class LorenzoBank
     
     // Boot the program
     public void boot(int size){
-
         this.database = new DataBase();
         this.database.initializeDatabase(size);
-
         startRoutine();
-
     }
 
-    public void startRoutine(){
-        
+    public void startRoutine(){  
         boolean quit = false;
         boolean back = false;
         clearScreen();
-        
+
         do{
             printWelcome();
             printOptions1();
-            
+
             switch(executeWelcomeMenu()){
-                
                 case -1:
-
                     quit = true;
-                    break;
-                    
+                    break;      
                 case 0:
-
                     quit = false;
-                    break;
-                    
+                    break;       
                 case 1:
-
                     back = false;
                     printWelcomeUser();
-                    
+
                     while(!back && !quit){
-                        
                         printOptions2();
-                        
+
                         switch(executeUserMenu()){
                             case -1:
                                 quit = true;
-                                break;
-                                
+                                break;           
                             case 0:
                                 back = false;
                                 break;
-                                
                             case 1:
                                 back = true;
                                 break;
                         }
                     }
                     break;
-
                 case 2:
-
                     back = false;
                     printWelcomeAdmin();
 
                     while(!quit && !back){
-                        
                         printOptionsAdmin();
 
                         switch(executeAdminMenu()){
-
                             case -1:
                                 quit = true;
                                 break;
-
                             case 0:
                                 quit = false;
                                 break;
-
                             case 1:
                                 back = true;
                                 break;
                         }
                     }
                     break;
-
             }
-        }while(!quit);
-        
-        printGoodbye();
-        
+        }while(!quit);     
+        printGoodbye(); 
     }
     
     public void printWelcome(){
-
         System.out.println("Welcome to Lorenzo's Bank!\n");
-
     }
     
     public void printWelcomeUser(){
-
         System.out.println("Welcome back, " + this.currentUsername + "! This is your home page." + "\n\n" +
                            "\tYour account code is: [" + database.locateAccount(this.currentUsername).getCode() + "]\n");
-
     }
 
     public void printWelcomeAdmin(){
-
         System.out.println("Welcome back, Administrator!" + "\n\n" +
                            "\tCurrently logged in to: [admin]\n");
-
     }
     
     public void printGoodbye(){
-
         System.out.println("\nApplication shutting off...");
         System.out.println("\n\nGood Bye!!");
-
-    }
-    
-    public void printLoadingScreen(){   // FIXME: No loading screen yet.
     }
     
     public void printOptions1(){
-
         System.out.println("Please select the desired operation:");
-            
         System.out.println("[1] Create an Account." + "\n" +
                            "[2] Log in to my Account." + "\n" +
                            "[8] Admin login." + "\n" +
@@ -194,9 +156,7 @@ public class LorenzoBank
     }
     
     public void printOptions2(){
-
         System.out.println("Please select the desired operation:");
-            
         System.out.println("[1] Check balance." + "\n" +
                            "[2] Deposit." + "\n" +
                            "[3] Withdrawal." + "\n" +
@@ -206,13 +166,10 @@ public class LorenzoBank
                            "[7] Delete account." + "\n" +
                            "[8] Logoff." + "\n" +
                            "[9] Quit.\n");   
-
     }
 
     public void printOptionsAdmin(){
-
         System.out.println("Please select the desired operation:");
-            
         System.out.println("[1] Show account." + "\n" +
                            "[2] Show database." + "\n" +
                            "[3] Delete account." + "\n" +
@@ -222,49 +179,40 @@ public class LorenzoBank
                            "[7] Change account password." + "\n" +
                            "[8] Logoff." + "\n" +
                            "[9] Quit.\n");   
-
     }
     
     /**
      * Starts 1st menu screen routine and RETURNS:
-     * 
      *      [1] If program should proceed to 2nd menu;
      *      [0] If 1st menu should repeat;
      *      [-1] Quits program immediately.
      *      [2] If program should access admin menu;
      */
     public int executeWelcomeMenu(){
-        
         int option = input.nextInt();
         
-        switch(option){
-            
-            case 1: // CREATE ACCOUNT
-
+        switch(option){   
+            // CREATE ACCOUNT
+            case 1:
                 createAccount();
                 return 0;
-                
-            case 2: // LOGIN TO ACCOUNT
-
+            // LOGIN TO ACCOUNT
+            case 2:
                 if(loginToAccount())
                     return 1;
                 else
                     return 0;
-                
-            case 8: // ADMIN LOGIN
-
+            // ADMIN LOGIN
+            case 8:
                 if(loginToAdmin())
-
                     return 2;  // Proceed to admin menu.
                 else
                     return 0;   // Repeats current menu.
-                
-            case 9: // QUIT
-
+            // QUIT
+            case 9:
                 return -1;
-                
+            // Default
             default: 
-
                 clearScreen();
                 System.out.println("Error: invalid option.\n");
                 return 0;
@@ -273,70 +221,58 @@ public class LorenzoBank
     
     /**
      * Starts 2nd menu screen routine and RETURNS:
-     * 
      *      [1] If program should return to 1st menu;
      *      [0] If 2nd menu should repeat;
      *      [-1] Quits program.
      */
     public int executeUserMenu(){
-
         int option = input.nextInt();
         Account account = this.database.locateAccount(this.currentUsername);
         
         switch(option){
-            
-            case 1: // CHECK BALANCE
-
+            // CHECK BALANCE
+            case 1:
                 checkBalance(account);
                 return 0;
-
-            case 2: // DEPOSIT
-
+            // DEPOSIT
+            case 2:
                 depositToAccount(account);
                 return 0;
-                
-            case 3: // WITHDRAWAL
-
+            // WITHDRAWAL
+            case 3:
                 withdrawFromAccount(account);
                 return 0;
-                
-            case 4: // TRANSFER
-
+            // TRANSFER
+            case 4:
                 transferFromAccount(account);
                 return 0;
-            
-            case 5: // CHANGE PASSWORD
-
+            // CHANGE PASSWORD
+            case 5:
                 if(changePassword(account))
                     return 1;
                 else
                     return 0;
-                
-            case 6: // CHANGE USERNAME
-
+            // CHANGE USERNAME
+            case 6: 
                 if(changeUsername(account))
                     return 1;
                 else
                     return 0;
-                
-            case 7: // DELETE ACCOUNT
-
+            // DELETE ACCOUNT
+            case 7:
                 if(deleteThisAccount(account))
                     return 1;
                 else
                     return 0;
-            
-            case 8: //LOGOFF
-
+            //LOGOFF
+            case 8:
                 logoffThisAccount();
                 return 1;
-            
-            case 9: //QUIT
-
+            //QUIT
+            case 9:
                 return -1;
-                
+            // Default
             default:
-
                 clearScreen();
                 System.out.println("Error: invalid option.\n");
                 return 0;
@@ -345,74 +281,63 @@ public class LorenzoBank
 
     /**
      * Starts admin menu screen routine and RETURNS:
-     * 
      *      [1] If program should return to 1st menu;
      *      [0] If 2nd menu should repeat;
      *      [-1] Quits program.
      */
     public int executeAdminMenu(){
-
         int option = input.nextInt();
         
         switch(option){
-            
-            case 1: // ADMIN - SHOW ACCOUNT
-                
+            // ADMIN - SHOW ACCOUNT
+            case 1: 
                 adminShowAccount();
                 return 0;
-
-            case 2: // ADMIN - SHOW DATABASE
-                
+            // ADMIN - SHOW DATABASE
+            case 2:                
                 adminShowDatabase();
                 return 0;
-                
-            case 3: // ADMIN - DELETE ACCOUNT
-                
+            // ADMIN - DELETE ACCOUNT    
+            case 3:                 
                 adminDeleteAccount();
                 return 0;
-                
-            case 4: // ADMIN - DEPOSIT
-                
+            // ADMIN - DEPOSIT   
+            case 4:                
                 adminDeposit();
                 return 0;
-            
-            case 5: // ADMIN - TRANSFER
-                
+            // ADMIN - TRANSFER
+            case 5: 
                 adminTransfer();
                 return 0;
-                
-            case 6: // CHANGE USERNAME
-                
+            // CHANGE USERNAME    
+            case 6: 
                 adminChangeUsername();
                 return 0;
-                
-            case 7: // CHANGE PASSWORD
-                
+            // CHANGE PASSWORD    
+            case 7: 
                 adminChangePassword();
                 return 0;
-            
-            case 8: //LOGOFF
+            //LOGOFF
+            case 8: 
                 logoffThisAccount();
                 return 1;
-            
-            case 9: //QUIT
+            //QUIT
+            case 9: 
                 return -1;
-                
+            // Default
             default:
-
                 clearScreen();
                 System.out.println("Error: invalid option.\n");
                 return 0;
         }
     }
     
-    public void createAccount(){        // FIXME: Improve account creation feedback and fluidity.
-        
+    public void createAccount(){      
         Account account;
         String username = "";
         String password;
         boolean invalid = true;
-        
+       
         clearScreen();
         System.out.println("Welcome to account creation!\n");
         
@@ -421,7 +346,7 @@ public class LorenzoBank
             
             System.out.println("Please, enter a username, or [8] to return:");
             username = input.nextLine();
-            
+
             if(this.database.checkUsername(username))
                 invalid = false; 
             else{
@@ -431,64 +356,45 @@ public class LorenzoBank
         }
         
         if(username.equals("8")){
-
             clearScreen();
             System.out.println("Returning to home screen...\n");
-
         } else{
-
             System.out.println("\nPlease, enter a password:");
-            password = input.nextLine();
-            
+            password = input.nextLine();          
             account = new Account(username, password);
             
             if(this.database.insertAccount(account)){
-
                 clearScreen();
                 System.out.println("Account was created succesfully.\n");
-
             } else{
-
                 clearScreen();
                 System.out.println("Error: account could not be created due to insufficient storage.\n");
-
             }
         }
     }
     
     public boolean loginToAccount(){
-
-        input.nextLine();
-        
+        input.nextLine();      
         clearScreen();
-        System.out.println("Welcome to account login!");
-        
+        System.out.println("Welcome to account login!");       
         String username = promptString("username");
         String password = promptString("password");
         
-        if(this.database.validateLogin(username, password)){
-            
+        if(this.database.validateLogin(username, password)){            
             clearScreen();
-            System.out.println("Login successful!\n");
-            
+            System.out.println("Login successful!\n");            
             this.currentUsername = username;
-            this.currentPassword = password;
-            
-            return true;
-            
-        } else {
-            
+            this.currentPassword = password;            
+            return true;            
+        } else {           
             clearScreen();
             System.out.println("Error: incorret username or password.\n");
-            return false;
-            
+            return false;            
         }
     }
     
-    public boolean loginToAdmin(){
-        
+    public boolean loginToAdmin(){        
         input.nextLine();
-
         clearScreen();
         System.out.println("Welcome to admin login!" + "\n" + "\n" +
                            "Note: Admin username and password are both 'admin' ;)");
@@ -497,13 +403,10 @@ public class LorenzoBank
         String password = promptString("admin password");
 
         if(username.equals("admin") && password.equals("admin")){
-
             clearScreen();
             System.out.println("Admin login succesful!\n");
             return true;  // Admin login successful
-
         } else{
-
             clearScreen();
             System.out.println("Error: incorrect admin username or password.\n");
             return false;  // Admin login failed
@@ -511,110 +414,80 @@ public class LorenzoBank
     }
 
     public void checkBalance(Account account){
-
         double balance;
-        balance = account.getBalance();
-        
+        balance = account.getBalance();        
         clearScreen();
         System.out.println(this.currentUsername + ", your account balance is:" + "\n\n" +
                            "\t" + "$ " + balance + "\n");
-
     }
     
     public void depositToAccount(Account account){
-
         clearScreen();
-        System.out.println("Deposit selected.");
-        
+        System.out.println("Deposit selected.");        
         promptString("the deposit amount");
         double value = input.nextDouble();
         
-        if(account.deposit(value)){
-            
+        if(account.deposit(value)){            
             clearScreen();
             System.out.println("Deposit was successful." + "\n\n" +
-                               "\t$" + value + " has been deposited into your account, " + account.getUsername() + ".\n");
-        
+                               "\t$" + value + " has been deposited into your account, " + account.getUsername() + ".\n");        
         } else{
             
             clearScreen();
             System.out.println("Error: invalid deposit ammount. Value must be greater than zero.\n");
-
         }
     }
     
     public void withdrawFromAccount(Account account){
-
         clearScreen();
-        System.out.println("Withdrawal selected.");
-        
+        System.out.println("Withdrawal selected.");        
         promptString("the withdrawal amount");       
         double value = input.nextDouble();
         
         if(value <= 0){
-
             clearScreen();
             System.out.println("Error: invalid deposit ammount. Value must be greater than zero.\n"); 
-
-        } else if(account.withdraw(value)){
-            
+        } else if(account.withdraw(value)){           
             clearScreen();
             System.out.println("Withdrawal was successful." + "\n\n" +
                                "\t$" + value + " has been withdrawn from your account, " + account.getUsername() + ".\n");
-
             } else{
-
                 clearScreen();
                 System.out.println("Error: withdrawal could not be completed due to insufficient funds.\n");
-
             }
-
     }
     
     public void transferFromAccount(Account account){
-
         double value;
-
         clearScreen();
-        System.out.println("Transfer selected.");
-        
+        System.out.println("Transfer selected.");      
         int receiverCode = promptInt("the receiving account's code");
-
         Account receiverAccount = this.database.locateAccount(receiverCode);
         
         if(receiverAccount == null){
-
             clearScreen();
             System.out.println("Error: Account does not exist.\n");
-
         } else{
-
             promptString("the transfer amount");;
             value = input.nextDouble();
-            
-            if(value <= 0){
 
+            if(value <= 0){
                 clearScreen();
                 System.out.println("Invalid transfer ammount. Value must be greater than zero.\n");
-
             } else if(account.transfer(receiverAccount, value)){
-
                 clearScreen();
                 System.out.println("Transfer was successful." + "\n\n" +
                                    "$" + value + " has been transferred from your account, " + account.getUsername() + ".\n\n" +
                                    "\tSender account: [" + account.getCode() + "]" + "\n" +
                                    "\tReceiver account: [" + receiverAccount.getCode() + "]\n");
                 } else{
-
                     clearScreen();
                     System.out.println("Error: transfer could not be completed due to insufficient funds.\n");
-
                 }
         }
     }
     
     public boolean deleteThisAccount(Account account){
-
         System.out.println("\nAre you sure you want to delete this account?" + "\n" +
                                    "[1] Yes" + "\n" +
                                    "[2] No");
@@ -622,82 +495,55 @@ public class LorenzoBank
         int accountCode; 
         
         if(option == 1){
-
             accountCode = account.getCode();
             
             if(database.deleteAccount(accountCode)){
-
                 clearScreen();
-                System.out.println("Account was deleted successfully. Redirecting to home screen...\n");
-                
-                this.database.rearrangeFiles();
-                
+                System.out.println("Account was deleted successfully. Redirecting to home screen...\n");                
+                this.database.rearrangeFiles();                
                 return true;
-
             } else{
-
                 clearScreen();
-                System.out.println("Error: could not delete account.\n");
-                
+                System.out.println("Error: could not delete account.\n");              
                 return false;
             }
-
         } else{
-
             clearScreen();
             System.out.println("Account deletion cancelled.\n");
-
             return false;
         }
     }
     
     public boolean changePassword(Account account){
-
-        input.nextLine();
-        
+        input.nextLine();        
         clearScreen();
-        System.out.println("Password change selected.");
-        
+        System.out.println("Password change selected.");     
         String password = promptString("current password");
         String passwordAux = account.getPassword();
         
         if(!password.equals(passwordAux)){
-
             clearScreen();
             System.out.println("Error: incorrect password.\n");
-
             return false;
-
         } else{
-
             password = promptString("new password");
-            
+           
             if(password.equals(passwordAux)){
-
                 clearScreen();
                 System.out.println("Error: new password must be different from current password.\n");
-
                 return false;
-
             } else{
-
                 System.out.println("\nPlease repeat new password:");
                 passwordAux = input.nextLine();
                 
                 if(!password.equals(passwordAux)){
-
                     clearScreen();
                     System.out.println("Error: new password did not match.\n");
-
                     return false;
-
                 } else{
-
                     account.setPassword(password);
-
                     clearScreen();
                     System.out.println("Password updated successfully. Redirecting to home screen...\n");
-
                     return true;
                 }
             }
@@ -705,273 +551,187 @@ public class LorenzoBank
     }
     
     public boolean changeUsername(Account account){
-
-        input.nextLine();
-        
+        input.nextLine();        
         clearScreen();
-        System.out.println("Username change selected.");
-        
+        System.out.println("Username change selected.");        
         String newUsername = promptString("new username");
         
         if(newUsername.equals(account.getUsername())){
-
             clearScreen();
             System.out.println("Error: new username must be different from current username.\n");
-
             return false;
-
         } else if(!this.database.checkUsername(newUsername)){
-
             clearScreen();
             System.out.println("Error: username is already taken.\n");
-
             return false;
-
         } else{
-
             System.out.println("\nAre you sure you want to change account username?" + "\n" +
                                    "[1] Yes" + "\n" +
                                    "[2] No");
             int option = input.nextInt();
             
             if(option == 1){
-
-                account.setUsername(newUsername);
-                
+                account.setUsername(newUsername);                
                 clearScreen();
                 System.out.println("Username updated successfully. Redirecting to home screen...\n");
-
                 return true;
-
             } else{
-
                 clearScreen();
                 System.out.println("Username change cancelled.\n");
-
                 return false;
             }
         }
     }
     
     public void logoffThisAccount(){
-
         this.currentUsername = null;
-        this.currentPassword = null;
-        
+        this.currentPassword = null;      
         clearScreen();
-        System.out.println("Loggin off. Redirecting to home screen...\n");
-        
+        System.out.println("Loggin off. Redirecting to home screen...\n");       
     }
 
     public void adminShowDatabase(){
-
         clearScreen();
         System.out.println("Printing database...\n");
-
         database.printDatabase();
-
         System.out.println();
-
     }
 
     public void adminShowAccount(){
-
-        Account account;
-        
+        Account account;        
         System.out.println("\nWould you like to search account by [1]Username or [2]Number?");
-
         int option = input.nextInt();
         
         if(option == 1){
-
             input.nextLine();   // Clears buffer.
-
             String username = promptString("the account's username");
-
             account = database.locateAccount(username);
 
             if(account == null){
-
                 clearScreen();
                 System.out.println("Error: account does not exist.\n");
-
             } else{
-
                 clearScreen();
                 System.out.println("Printing account...");
                 System.out.println("\n" + account.toString() + "\n");
-
             }
-
         } else if(option == 2){
-
             int code = promptInt("the account's code");
-
             account = database.locateAccount(code);
 
             if(account == null){
-
                 clearScreen();
                 System.out.println("Error: account does not exist.\n");
-
             } else{
-
                 clearScreen();
                 System.out.println("Printing account...");
                 System.out.println("\n" + account.toString() + "\n");
-
             }
-
         } else{
-
             clearScreen();
             System.out.println("Error: invalid option.\n");
         }
     }
     
     public void adminDeleteAccount(){
-
         Account account;
-
         clearScreen();
         System.out.println("[ADMIN] Account deletion." + "\n" +
                            "\nWould you like to delete an account by [1]Username or [2]Number:");
-
         int option = input.nextInt();
         
         if(option == 1){
-
             input.nextLine();   // Clears buffer.
-
             String username = promptString("the account's username");
             account = database.locateAccount(username);
 
             if(account == null){
-
                 clearScreen();
                 System.out.println("Error: account does not exist.\n");
-
             } else if(database.deleteAccount(account.getCode())){
-
                     clearScreen();
                     System.out.println("Account deleted succesfully.\n");
-
                 } else{
-
                     clearScreen();
                     System.out.println("Error: account could not be deleted.\n");
                 }
-
         } else if(option == 2){
-
             int code = promptInt("the account's code");
             account = database.locateAccount(code);
 
             if(account == null){
-
                 clearScreen();
                 System.out.println("Error: account does not exist.\n");
-
             } else if(database.deleteAccount(account.getCode())){
-
-                    database.rearrangeFiles();
-                    
+                    database.rearrangeFiles();                    
                     clearScreen();
                     System.out.println("Account deleted succesfully.\n");
-
                 } else{
-
                     clearScreen();
                     System.out.println("Error: account could not be deleted.\n");
-                }
-        
+                }      
         } else{
-
             clearScreen();
             System.out.println("Error: invalid option.\n");
         }
     }
 
     public void adminDeposit(){
-
-        clearScreen();
-        System.out.println("[ADMIN] Deposit selected.");
-        
         Account account;
         double value;
+        clearScreen();
+        System.out.println("[ADMIN] Deposit selected.");      
         int code = promptInt("the account code to deposit to");
-
         account = database.locateAccount(code);
 
-        if(account == null){
-            
+        if(account == null){            
             clearScreen();
             System.out.println("Error: account does not exist.\n");
-
         } else{
-
             value = promptDouble("the amount to deposit");
             
             if(account.deposit(value)){
-
                 clearScreen();
                 System.out.println("Deposit was successful." + "\n\n" +
                                    "\t$" + value + " has been deposited into " + account.getUsername() + "'s account [" + account.getCode() + "].\n");
-
             } else{
-
                 clearScreen();
                 System.out.println("Error: invalid deposit ammount. Value must be greater than zero.\n");
             }
         }
-
     }
 
     public void adminTransfer(){
-
-        clearScreen();
-        System.out.println("[ADMIN] Transfer selected.");
-        
-        Account accountSender, accountReceiver;
         double value;
+        clearScreen();
+        System.out.println("[ADMIN] Transfer selected.");     
+        Account accountSender, accountReceiver;
         int code = promptInt("the account code to transfer from");
-
         accountSender = database.locateAccount(code);
 
-        if(accountSender == null){
-            
+        if(accountSender == null){            
             clearScreen();
             System.out.println("Error: sender account does not exist.\n");
-
-        } else{
-        
+        } else{      
             code = promptInt("the account code to transfer to");
             accountReceiver = database.locateAccount(code);
 
             if(accountReceiver == null){
-
                 clearScreen();
-                System.out.println("Error: receiver account does not exist.\n");
-                
+                System.out.println("Error: receiver account does not exist.\n");                
             } else{
-
                 value = promptDouble("the amount to deposit");
 
                 if(value <= 0){
-
                     clearScreen();
-                    System.out.println("Error: transfer amount must be greater than zero.\n");
-                
+                    System.out.println("Error: transfer amount must be greater than zero.\n");               
                 } else if(accountSender.transfer(accountReceiver, value)){
-
                     clearScreen();
                     System.out.println("Transfer was successful." + "\n\n" +
                                        "$" + value + " has been transferred from " + accountSender.getUsername() + "'s account into " + accountReceiver.getUsername() + "'s account." + "\n\n" +
                                        "\tSender account: [" + accountSender.getCode() + "]" + "\n" +
                                        "\tReceiver account: [" + accountReceiver.getCode() + "]\n");
-
                     } else{
-
                         clearScreen();
                         System.out.println("Error: transfer could not be completed due to insufficient funds.\n");
                     }
@@ -980,141 +740,96 @@ public class LorenzoBank
     }
 
     public void adminChangeUsername(){
-
-        clearScreen();
-        System.out.println("[ADMIN] Username change selected.");
-        
         Account account;
+        clearScreen();
+        System.out.println("[ADMIN] Username change selected.");   
         int code = promptInt("the account code to change username");
         account = database.locateAccount(code);
 
-        if(account == null){
-            
+        if(account == null){          
             clearScreen();
             System.out.println("Error: account does not exist.\n");
-
         } else{
-
             input.nextLine();
-
             String newUsername = promptString("new username");
             
             if(newUsername.equals(account.getUsername())){
-
                 clearScreen();
                 System.out.println("Error: new username must be different from current username.\n");
-
             } else if(!this.database.checkUsername(newUsername)){
-
                 clearScreen();
                 System.out.println("Error: new username is already taken.\n");
-
                 } else{
-
                     System.out.println("\nAre you sure you want to change this account's username?" + "\n" +
                                         "[1] Yes" + "\n" +
                                         "[2] No");
                     int option = input.nextInt();
                     
                     if(option == 1){
-
-                        account.setUsername(newUsername);
-                        
+                        account.setUsername(newUsername);                      
                         clearScreen();
                         System.out.println("Username updated successfully.\n");
-
                     } else if(option == 2){
-
                         clearScreen();
                         System.out.println("Username change cancelled.\n");
-
                         } else{
-
                             clearScreen();
                             System.out.println("Error: invalid option. Username change cancelled.\n");
-
                         }
             }
         }
     }
 
     public void adminChangePassword(){
-
-        
-        
+        Account account;       
         clearScreen();
-        System.out.println("[ADMIN] Password change selected.");
-        
-        Account account;
+        System.out.println("[ADMIN] Password change selected.");   
         int code = promptInt("the account code to change password");
         account = database.locateAccount(code);
         
         if(account == null){
-            
             clearScreen();
             System.out.println("Error: account does not exist.\n");
-
-        } else{
-        
+        } else{       
             input.nextLine();
-
             String password = promptString("new password");
             String passwordAux = account.getPassword();
             
             if(password.equals(passwordAux)){
-
                 clearScreen();
                 System.out.println("Error: new password must be different from current password.\n");
-
-
             } else{
-
                 System.out.println("\nPlease repeat new password:");
                 passwordAux = input.nextLine();
                 
                 if(!password.equals(passwordAux)){
-
                     clearScreen();
                     System.out.println("Error: new password did not match.\n");
-
                 } else{
-
                     account.setPassword(password);
-
                     clearScreen();
                     System.out.println("Password updated successfully.\n");
-
                 }
             }
         }
     }
 
     public String promptString(String prompt){
-
-        System.out.println("\nPlease enter " + prompt + ":");
-        
+        System.out.println("\nPlease enter " + prompt + ":");        
         return this.input.nextLine();
-
     }
 
     public int promptInt(String prompt){
-
-        System.out.println("\nPlease enter " + prompt + ":");
-        
+        System.out.println("\nPlease enter " + prompt + ":");        
         return this.input.nextInt();
-
     }
 
     public double promptDouble(String prompt){
-
-        System.out.println("\nPlease enter " + prompt + ":");
-        
+        System.out.println("\nPlease enter " + prompt + ":");        
         return this.input.nextDouble();
-
     }
     
     public void clearScreen(){
-
         // System.out.print("\f");                  // Clears terminal in BlueJ.
         
         try {                                       // Clears terminal in CMD - kinda works for VSCode terminal aswell =D
